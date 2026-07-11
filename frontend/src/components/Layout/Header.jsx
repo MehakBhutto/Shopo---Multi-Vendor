@@ -8,6 +8,7 @@ import { BiMenuAltLeft } from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
 import DropDown from './DropDown'
 import Navbar from './Navbar.jsx'
+import Cart from "../Cart/Cart.jsx"
 
 const Header = ({ activeHeading }) => {
 
@@ -15,6 +16,8 @@ const Header = ({ activeHeading }) => {
     const [searchData, setSearchData] = useState("");
     const [active, setActive] = useState(false);
     const [dropDown, setDropDown] = useState(false);
+    const [openCart, setOpenCart] = useState(false);
+    const [openWishlist, setOpenWishlist] = useState(false)
 
     const handleSearchChange = (e) => {
         const term = e.target.value;
@@ -130,6 +133,12 @@ const Header = ({ activeHeading }) => {
                                 </Link>
                             </div>
                         </div>
+                        {/* wishlist */}
+                        {
+                            openCart ? (
+                                <Cart setOpenCart={setOpenCart} />
+                            ) : null
+                        }
                     </div>
 
                 </div>
