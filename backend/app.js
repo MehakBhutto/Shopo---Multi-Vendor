@@ -7,13 +7,25 @@ const cors = require('cors');
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
 app.use("/", express.static("uploads"));
 app.use(bodyParser.urlencoded({extended:true, limit:'50mb'}))
 
 //import routes
 
 app.use('/api/v2/user', require('./routes/userRoute'));
+app.use('/api/v2/shop', require('./routes/shopRoute'))
+app.use('/api/v2/product', require('./routes/productRoute'))
+app.use('/api/v2/event', require('./routes/eventRoute'));
+app.use('/api/v2/coupoun', require('./routes/coupounCodeRoute'));
+app.use('/api/v2/payment', require('./routes/paymentRoute'));
+app.use('/api/v2/order', require('./routes/orderRouter'));
+app.use('/api/v2/conversation', require('./routes/conversationRoute'));
+app.use('/api/v2/message', require('./routes/messages'));
+
 
 //Its for ErrorHandling
 app.use(errorMiddleware)

@@ -1,83 +1,326 @@
 const ErrorHandler = require('../utils/ErrorHandler');
+const catchAsyncErrors = require("../middleware/catchAsyncErrors")
 const userModel = require('../models/userModel')
 const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../utils/sendMail');
+const sendToken = require('../utils/jwtToken');
 
 const register = async (req, res, next) => {
-
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-        return next(new ErrorHandler('Please provide name, email, and password', 400));
-    }
-
-    if (!req.file) {
-        return next(new ErrorHandler('Please upload an avatar file', 400))
-    }
-
-    const userEmail = await userModel.findOne({ email });
-
-    if (userEmail) {
-        fs.unlink(req.file.path, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        });
-
-        return next(new ErrorHandler("User already exists", 400))
-    }
-
-    const filename = req.file.filename;
-    const fileUrl = path.join(filename);
-
-    const user = {
-        name,
-        email,
-        password,
-        avatar: fileUrl
-    }
-
-    const activationToken = createActivationToken(user);
-
-    const activationUrl = `http://localhost:4000/activation/${activationToken}`;
-
     try {
-        await sendMail({
-            email: user.email,
-            subject: "Activate your account",
-            message: `Hello ${user.name}, please click on the Link to activate your account: ${activationUrl}`
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            return next(new ErrorHandler('Please provide name, email, and password', 400));
+        }
+
+        if (!req.file) {
+            return next(new ErrorHandler('Please upload an avatar file', 400))
+        }
+
+        const userEmail = await userModel.findOne({ email });
+
+        if (userEmail) {
+            fs.unlink(req.file.path, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+
+            return next(new ErrorHandler("User already exists", 400))
+        }
+
+        const filename = req.file.filename;
+        const fileUrl = path.join(filename);
+
+        const user = {
+            name,
+            email,
+            password,
+            avatar: fileUrl,
+            accountVerified: false,
+        }
+
+        const activationToken = createActivationToken(user);
+
+        const activationUrl = `http://localhost:5173/activation/${activationToken}`;
+
+
+        try {
+            await sendMail({
+                email: user.email,
+                subject: "Activate your account",
+                message: `Hello ${user.name}, please click on the Link to activate your account: ${activationUrl}`
+            })
+        } catch (e) {
+            return next(new ErrorHandler(e.message, 400))
+        }
+
+        res.status(201).json({
+            success: true,
+            message: `please check your email: ${user.email} to activate your account!`,
         })
     } catch (e) {
-        fs.unlink(req.file.path, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        });
-
-        const message = e.code === "ETIMEDOUT" || e.message === "Connection timeout"
-            ? "Email service connection timed out. Check SMTP port, firewall, or network access."
-            : e.message;
-
-        return next(new ErrorHandler(message, 503))
+        if (req.file) {
+            fs.unlink(`uploads/${req.file.filename}`, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
+        return next(new ErrorHandler(e.message, 400))
     }
-
-    const newUser = await userModel.create(user);
-
-    res.status(201).json({
-        success: true,
-        message: `please check your email: ${user.email} to activate your account!`,
-        newUser,
-    })
 };
 
 //create activation token
-const createActivationToken = (user) => {
-    return jwt.sign(user, process.env.ACTIVATION_SECRET, {
+const createActivationToken = (seller) => {
+    return jwt.sign(seller, process.env.ACTIVATION_SECRET, {
         expiresIn: "24h"
     })
 }
 
-//activate user 
-module.exports = { register };
+//activate user
+const activation = catchAsyncErrors(async (req, res, next) => {
+    try {
+
+        const { activation_token } = req.body;
+
+        const newUser = jwt.verify(activation_token, process.env.ACTIVATION_SECRET);
+
+        if (!newUser) {
+            return next(new ErrorHandler("Invalid token", 400));
+        }
+
+        const { name, email, password, avatar } = newUser;
+
+        const existingUser = await userModel.findOne({ email });
+
+        if (existingUser) {
+            return next(new ErrorHandler("User already exists", 400));
+        }
+
+        const user = await userModel.create({
+            name,
+            email,
+            avatar,
+            password,
+            accountVerified: true,
+        });
+
+        sendToken(user, 201, res)
+
+    } catch (e) {
+        return next(e.message);
+    }
+});
+
+const login = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return next(new ErrorHandler("Please provide the all fields", 400));
+        }
+
+        const user = await userModel.findOne({ email }).select("+password");
+        if (!user) {
+            return next(new ErrorHandler("User doesn't exists!", 400));
+        }
+
+        const isPasswordField = await user.comparePassword(password);
+
+        if (!isPasswordField) {
+            return next(new ErrorHandler("Please provide the correct Information!", 400));
+        }
+
+        sendToken(user, 200, res);
+    } catch (e) {
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+//load user
+const getUser = catchAsyncErrors(async (req, res, next) => {
+    try {
+
+        const user = await userModel.findById(req.user._id).select("-password");
+
+        if (!user) {
+            return next(new ErrorHandler("User doesn't exists!", 400));
+        }
+
+        res.status(200).json({ success: true, user });
+
+    } catch (e) {
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+// log out user
+const logout = catchAsyncErrors(async (req, res, next) => {
+    try {
+
+        res.cookie("token", null, {
+            expires: new Date(Date.now()),
+            httpOnly: true,
+        });
+
+        res.status(201).json({ success: true, message: "Log out Successful!" })
+
+    } catch (e) {
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+const updateUserInfo = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const { name, email, phoneNumber, password } = req.body;
+
+        const user = await userModel.findById(req.user._id).select("+password");
+
+        if (!user) {
+            return next(new ErrorHandler("User doesn't exists!", 400));
+        }
+
+        const isPasswordValid = await user.comparePassword(password);
+        console.log(isPasswordValid)
+        if (isPasswordValid === false) {
+            return next(new ErrorHandler("Please provide the correct password!", 400));
+        }
+
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (phoneNumber) user.phoneNumber = phoneNumber;
+
+        const updatedUser = await userModel.findByIdAndUpdate(req.user._id, user);
+
+        res.status(200).json({ success: true, user: updatedUser });
+
+    } catch (e) {
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+const updateAvatar = catchAsyncErrors(async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return next(new ErrorHandler("Please upload an avatar image", 400));
+        }
+
+        const filename = req.file.filename;
+
+        const existingUser = await userModel.findById(req.user._id);
+        if (!existingUser) {
+            await fs.unlink(path.join('uploads', filename)).catch(err => console.error(err));
+            return next(new ErrorHandler("User does not exist!", 404));
+        }
+
+        const existAvatarPath = path.join('uploads', existingUser.avatar);
+        if (fs.existsSync(existAvatarPath)) {
+            fs.unlinkSync(existAvatarPath);
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(
+            req.user._id,
+            { avatar: filename },
+        );
+
+        res.status(200).json({
+            success: true,
+            user: updatedUser
+        });
+    } catch (e) {
+        if (req.file) {
+            fs.unlink(`uploads/${req.file.filename}`, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+const updateUserAddresses = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const user = await userModel.findById(req.user._id);
+        if (!user) {
+            return next(new ErrorHandler("User doesn't exists!", 400));
+        }
+
+        const sameTypeAddress = user.address.find((address) => address.addressType === req.body.addressType);
+        if (sameTypeAddress) {
+            return next(new ErrorHandler(`Address of type ${req.body.addressType} already exists`, 400));
+        }
+
+        const existAddress = user.address.find((address) => address._id === req.body._id);
+        if (existAddress) {
+            Object.assign(existAddress, req.body);
+        }
+        else {
+            user.address.push(req.body);
+        }
+
+        const newUser = await userModel.findByIdAndUpdate(req.user._id, user, { new: true });
+
+        res.status(200).json({ success: true, user: newUser });
+
+    } catch (e) {
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+const deleteUserAddress = catchAsyncErrors(async (req, res, next) => {
+    try {
+      const userId = req.user._id;
+      const addressId = req.params.id;
+
+      await userModel.updateOne(
+        {
+          _id: userId,
+        },
+        { $pull: { address: { _id: addressId } } }
+      );
+
+      const user = await userModel.findById(userId);
+
+      res.status(200).json({ success: true, user });
+
+
+    } catch (e) {
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+const changePassword = catchAsyncErrors(async (req, res, next) => {
+    try{
+
+        const user = await userModel.findById(req.user._id).select("+password");
+        
+        if(!user){
+            return next(new ErrorHandler("User doesn't exists!", 400));
+        }
+
+        const isPasswordValid = await user.comparePassword(req.body.oldPassword);
+        if(!isPasswordValid){
+            return next(new ErrorHandler("Please provide the correct password!", 400));
+        }
+
+        if(req.body.newPassword !== req.body.confirmPassword){
+            return next(new ErrorHandler("Password doesn't match!", 400));
+        }
+        
+        user.password = req.body.newPassword;
+
+        const newUser = await user.save();
+
+        res.status(200).json({ success: true, message: "Password changed successfully!" });
+
+    }catch(e){
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+
+module.exports = { register, activation, login, getUser, logout, updateUserInfo, updateAvatar, updateUserAddresses, deleteUserAddress, changePassword };

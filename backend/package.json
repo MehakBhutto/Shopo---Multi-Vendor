@@ -10,7 +10,9 @@
     "mongoose": "^9.7.4",
     "multer": "^2.2.0",
     "nodemailer": "^9.0.3",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "resend": "^6.17.2",
+    "stripe": "^22.4.0"
   },
   "name": "backend",
   "version": "1.0.0",

@@ -18,7 +18,30 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter your password"],
         minlength: [8, "Password must have at least 8 characters."],
-        maxlength: [32, "Password cannot have more than 32 characters."]
+        maxlength: [32, "Password cannot have more than 32 characters."],
+        select: false
+    },
+    address: {
+        type: [
+            {
+                country: { type: String },
+                city: { type: String },
+                address1: { type: String },
+                address2: { type: String },
+                zipCode: { type: String },
+                addressType: { type: String },
+            }
+        ],
+        default: [],
+    },
+    phoneNumber: {
+        type: String,
+        minlength: [11, "Phone number must have at least 11s digits."],
+        required: [true, "Please enter your phone number"],
+    },
+    role: {
+        type: String,
+        default: "user"
     },
     accountVerified: { type: Boolean, default: false },
     resetPasswordToken: String,
