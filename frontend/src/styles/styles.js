@@ -6,11 +6,11 @@ const styles = {
     productDiscountPrice: 'font-bold text-[18px] text-[#333] front-Roboto',
     price: 'font-[500] text-[16px] text-[#d55b45] pl-3 mt-[-4px] line-through',
     shop_name:'pt-3 text-[15px] text-blue-400 pb-3',
-    active_indicator:'absolute bottom-[-27p] left-0 h-[13px] w-full bg-[crimson]',
-    button: 'w-[150p] px-3 py-3 bg-black h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer',
+    active_indicator:'absolute bottom-[-10px] left-0 h-[3px] w-full bg-[crimson]',
+    button: 'min-w-[150px] max-w-[170px] px-3 py-3 bg-black h-[50px] my-3 flex items-center justify-center rounded-xl cursor-pointer',
     cart_button: 'px-[20px] h-[38px] rounded-[20px] bg-[#f63b60] flex items-center justify-center cursor-pointer',
     cart_button_text: 'text-[#fff] text-[16px] font-[600]',
-    input:'w-full botrder p-1 rounded-[5px]',
+    input:'w-full border p-1 rounded-[5px]',
     activeStatus: 'w-[10px] h-[10px] rounded-full absolute top-0 right-1 bg-[#40d132]',
     normalFlex: 'flex items-center'
 };

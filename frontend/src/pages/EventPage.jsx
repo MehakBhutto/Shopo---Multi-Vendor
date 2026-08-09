@@ -3,17 +3,26 @@ import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
 import { productData } from '../static/data.jsx'
 import EventCard from '../components/Events/EventCard.jsx'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { getAllEvents } from '../redux/actions/event.js'
 
 const EventPage = () => {
 
-      const eventProduct = productData[1];
-      const eventEndDate = '2026-12-31T23:59:59';
+  const { allevents } = useSelector((state) => state.event);
+
+  useEffect(()=>{
+  },[allevents])
 
   return (
     <div>
       <Header activeHeading={4} />
       <EventCard active={true} />
-      <EventCard active={true} data={eventProduct} endDate={eventEndDate}/>
+      {
+        allevents && allevents.map((item, index) => (
+          <EventCard key={index} active={true} data={item} endDate={item?.finish_Date} />
+        ))
+      }
       <Footer />
     </div>
   )

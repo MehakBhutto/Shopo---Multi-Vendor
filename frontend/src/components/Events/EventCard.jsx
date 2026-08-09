@@ -2,16 +2,39 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from '../../styles/styles'
 import CountDown from "./CountDown.jsx"
+import { backend_url } from '../../../server.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { addToCart } from '../../redux/actions/cart.js'
+import { toast } from 'react-toastify'
 
-export default function EventCard({ data, endDate, active }){
+export default function EventCard({ data, endDate, active }) {
+
+    const { cart } = useSelector((state) => state.cart );
+    const dispatch = useDispatch();
+
+    const addToCartHandler = (data) => {
+        const isItemExists = cart && cart.find((i) => i._id === data?._id);
+        if (isItemExists) {
+            toast.error('Item is already in cart')
+        } else {
+            if (data.stock < 1) {
+                toast.error("Product stock limited")
+            } else {
+                const cartData = { ...data, qty: 1 };
+                dispatch(addToCart(cartData));
+                toast.success("Item added to cart successfully");
+            }
+        }
+    };
+
     if (!data) {
         return null
     }
 
-    const productName = data.name.replace(/\s+/g, "-");
-    const productImage = Array.isArray(data.image_Url)
-        ? data.image_Url[0]?.url
-        : data.image_Url;
+    const productId = data._id || data.id;
+    const productImage = Array.isArray(data.images)
+        ? `${backend_url}` + data.images[0]
+        : `${backend_url}` + data.images;
 
     return (
         <div className={`mb-12 flex w-full flex-col rounded-lg bg-white p-6 shadow-sm lg:flex-row lg:p-14 ${active ? "unset" : "mb-12"}`}>
@@ -28,20 +51,26 @@ export default function EventCard({ data, endDate, active }){
                     {data.description}
                 </p>
                 <div className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-2">
-                    {data.price ? (
+                    {data.originalPrice ? (
                         <h5 className="font-[500] text-[18px] text-[#d55b45] line-through">
-                            {data.price}$
+                            {data.originalPrice}$
                         </h5>
                     ) : null}
-                    <h5 className="font-Roboto text-[20px] font-bold text-[#333]">{data.discount_price}$</h5>
-                    <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">{data.total_sell} Sold</span>
+                    <h5 className="font-Roboto text-[20px] font-bold text-[#333]">{data.discountPrice}$</h5>
+                    <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">{data.sold_out} Sold</span>
                 </div>
                 <div className="mt-6">
                     <CountDown endDate={endDate} />
                 </div>
-                <Link to={`/product/${productName}`} className={`${styles.button} mt-6 rounded-[4px]`}>
-                    <span className="text-[#fff]">See Details</span>
-                </Link>
+                <div className='flex items-center gap-5'>
+                    <Link to={`/product/${productId}?isEvent=true`} className={`${styles.button} mt-6 rounded-[4px]`}>
+                        <span className="text-[#fff]">See Details</span>
+                    </Link>
+                    <div
+                        className={`${styles.button} text-[#fff] mt-6`}
+                        onClick={() => addToCartHandler(data)}
+                    >Add to Cart</div>
+                </div>
             </div>
         </div>
     )

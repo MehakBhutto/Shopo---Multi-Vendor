@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { RxAvatar } from 'react-icons/rx'
 import axios from 'axios'
 import { server } from '../../../server'
+import { toast } from 'react-toastify'
 
 const Signup = () => {
 
@@ -35,12 +36,14 @@ const Signup = () => {
         axios.post(`${server}/user/create-user`, newform, config)
         .then((res)=>{
             if(res.data.success === true){
+                toast.success(res.data.message);
                 navigate('/')
+                window.location.reload();
             }
         }).catch((err)=>{
             const message = err.response?.data?.message || err.message;
             setError(message);
-            console.log(message)
+            toast.error(message)
         })
     };
 
@@ -125,7 +128,7 @@ const Signup = () => {
                         </div>
                         <div className={`${styles.normalFlex} w-full`}>
                             <h4>Already have an account</h4>
-                            <Link to='/' className='text-blue-600 pl-2'>Login</Link>
+                            <Link to='/login' className='text-blue-600 pl-2'>Login</Link>
                         </div>
                     </form>
                 </div>

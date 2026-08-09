@@ -263,6 +263,7 @@ export const categoriesData = [
 // product Data
 export const productData = [
     {
+      _id: "product-001",
       id: 1,
       category: "Computers and Laptops",
       name: "MacBook pro M2 chipset 256gb ssd 8gb ram space-gray color with apple 1 year warranty",
@@ -293,6 +294,7 @@ export const productData = [
       stock: 10,
     },
     {
+      _id: "product-002",
       id: 2,
       category: "Mobile and Tablet",
       name: "Iphone 14 pro max 256 gb ssd and 8 gb ram silver colour",
@@ -323,6 +325,7 @@ export const productData = [
       categories: "Mobile & Tablets",
     },
     {
+      _id: "product-003",
       id: 4,
       category: "Others",
       name: "New Fashionable Watch for men 2023 with multiple colors",
@@ -354,6 +357,7 @@ export const productData = [
       stock: 10,
     },
     {
+      _id: "product-004",
       id: 6,
       category: "Shoes",
       name: "New Trend shoes for gents with all sizes",
@@ -385,6 +389,7 @@ export const productData = [
       categories: "Shoess",
     },
     {
+      _id: "product-005",
       id: 1,
       name: "Gaming Headphone Asus with mutiple color and free delivery",
       description:
@@ -424,6 +429,7 @@ export const productData = [
       category: "Music and Gaming",
     },
     {
+      _id: "product-006",
       id: 4,
       name: "New Fashionable Watch for men 2023 with multiple colors",
       description:
@@ -453,6 +459,7 @@ export const productData = [
       stock: 10,
     },
     {
+      _id: "product-007",
       id: 1,
       name: "Gaming Headphone Asus with mutiple color and free delivery",
       description:
@@ -491,6 +498,7 @@ export const productData = [
       stock: 10,
     },
     {
+      _id: "product-008",
       id: 22,
       category: "Mobile and Tablets",
       name: "Iphone 14 pro max 256 gb ssd and 8 gb ram silver colour",
@@ -520,6 +528,7 @@ export const productData = [
       stock: 10,
     },
     {
+      _id: "product-009",
       id: 1,
       category: "Music and Gaming",
       name: "Gaming Headphone Asus with mutiple color and free delivery",

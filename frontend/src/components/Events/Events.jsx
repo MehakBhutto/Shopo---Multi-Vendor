@@ -1,23 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from '../../styles/styles'
 import EventCard from './EventCard.jsx'
 import { productData } from '../../static/data.jsx'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllEvents } from '../../redux/actions/event.js'
 
 const Events = () => {
-  const eventProduct = productData[1];
-  const eventEndDate = '2026-12-31T23:59:59';
+  const { allevents, isLoading } = useSelector((state) => state.event);
+  const event = allevents?.[0];
+
+  useEffect(() => {},[allevents])
 
   return (
     <div>
-            <div className={`${styles.section}`}>
-                <div className={`${styles.heading}`}>
-                    <h1 className='pt-[25px]'>Popular Events</h1>
-                </div>
-                <div className="w-full grid">
-                    <EventCard data={eventProduct} endDate={eventEndDate} />
-                </div>
+      {
+        !isLoading && (
+          <div className={`${styles.section}`}>
+            <div className={`${styles.heading}`}>
+              <h1 className='pt-[25px]'>Popular Events</h1>
             </div>
-        </div>
+            <div className="w-full grid">
+              <EventCard data={event} endDate={event?.finish_Date} />
+            </div>
+          </div>
+        )
+      }
+    </div>
   )
 }
 
