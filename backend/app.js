@@ -8,7 +8,7 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://shopo-multi-vendor-backend.vercel.app",
     credentials: true,
 }));
 app.use("/", express.static("uploads"));
