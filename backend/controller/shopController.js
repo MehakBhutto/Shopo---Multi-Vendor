@@ -46,7 +46,8 @@ const createShop = async (req, res, next) => {
 
         const activationToken = createActivationToken(shopSeller);
 
-        const activationUrl = `http://localhost:5173/seller/activation/${activationToken}`;
+        const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+        const activationUrl = `${clientUrl}/seller/activation/${activationToken}`;
 
         const seller = await shopModel.create({
             ...shopSeller,
