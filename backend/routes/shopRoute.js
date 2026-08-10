@@ -10,6 +10,7 @@ const {
     logoutSeller,
     updateShopAvatar,
     updateShopInfo,
+    shopInfo,
 } = require("../controller/shopController");
 
 shopRouter.post("/create-shop", upload.single("file"), createShop)
@@ -19,6 +20,6 @@ shopRouter.get("/getSeller",isSeller, getSeller)
 shopRouter.get("/logout", isSeller, logoutSeller);
 shopRouter.put("/update-shop-avatar", isSeller, upload.single("file"), updateShopAvatar);
 shopRouter.put("/update-seller-info", isSeller, updateShopInfo);
-
+shopRouter.get('/shop-info/:sellerId', shopInfo)
 
 module.exports = shopRouter;

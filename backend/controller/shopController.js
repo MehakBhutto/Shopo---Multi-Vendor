@@ -247,6 +247,27 @@ const updateShopAvatar = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+const shopInfo = catchAsyncErrors(async(req, res, next) => {
+    try{
+
+        const {sellerId} = req.params;
+
+        const shop = await shopModel.findById(sellerId).select("-password");
+
+        if(!shop) {
+            return next(new ErrorHandler('Seller is not found!', 500));
+        }
+
+        res.status(201).json({
+            success: true,
+            shop
+        })
+
+    }catch(e){
+        return next(new ErrorHandler(e.message, 500));
+    }
+})
+
 
 module.exports = {
     createShop,
@@ -256,4 +277,5 @@ module.exports = {
     logoutSeller,
     updateShopAvatar,
     updateShopInfo,
+    shopInfo,
 }

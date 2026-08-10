@@ -322,5 +322,32 @@ const changePassword = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
+const userInfo = catchAsyncErrors(async (req, res, next) => {
+    try{
 
-module.exports = { register, activation, login, getUser, logout, updateUserInfo, updateAvatar, updateUserAddresses, deleteUserAddress, changePassword };
+        const { userId } = req.params;
+
+        const user = await userModel.findById(userId)
+
+        res.status(200).json({
+            success: true,
+            user
+        })
+
+    }catch(e){
+        return next(new ErrorHandler(e.message, 500));
+    }
+});
+
+module.exports = { 
+    register, 
+    activation, 
+    login, 
+    getUser, 
+    logout, 
+    updateUserInfo, 
+    updateAvatar, 
+    updateUserAddresses, 
+    deleteUserAddress, 
+    changePassword, 
+    userInfo };

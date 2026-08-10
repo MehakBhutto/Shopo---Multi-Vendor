@@ -39,7 +39,7 @@ const getAllConvers = catchAsyncErrors(async (req, res, next) => {
 
         const conversation = await Conversation.find({
             members: {
-                $in: [req.params.sellerId],
+                $in: [req.params.id],
             },
         }
         ).sort({ updateAt: -1, createdAt: -1 });
@@ -82,6 +82,7 @@ const updateLastMessage = catchAsyncErrors(async(req, res, next) => {
 // get user conversations
 const getUserConvers = catchAsyncErrors(async (req, res, next) => {
     try {
+      console.log(req.params.id)
       const conversations = await Conversation.find({
         members: {
           $in: [req.params.id],

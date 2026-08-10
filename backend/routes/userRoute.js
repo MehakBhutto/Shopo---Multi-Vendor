@@ -1,7 +1,7 @@
 const express = require('express');
 const upload = require('../multer');
 const router = express.Router();
-const { register, activation, login, getUser, logout, updateUserInfo, updateAvatar, updateUserAddresses, deleteUserAddress, changePassword } = require('../controller/userController');
+const { register, activation, login, getUser, logout, updateUserInfo, updateAvatar, updateUserAddresses, deleteUserAddress, changePassword, userInfo } = require('../controller/userController');
 const { isAuthenticated } = require('../middleware/auth');
 
 router.post('/create-user', upload.single("file"), register);
@@ -14,5 +14,6 @@ router.put('/update-avatar', isAuthenticated, upload.single("file"), updateAvata
 router.put('/update-user-addresses', isAuthenticated, updateUserAddresses);
 router.delete('/delete-user-addresses/:id', isAuthenticated, deleteUserAddress);
 router.put('/update-user-password', isAuthenticated, changePassword);
+router.get('/user-info/:userId', userInfo)
 
 module.exports = router;

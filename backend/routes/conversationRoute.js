@@ -9,7 +9,7 @@ const {
 const { isSeller, isAuthenticated } = require('../middleware/auth');
 
 router.post('/create-new-conversation', createConversation);
-router.get('/get-all-conversation-seller/:sellerId', isSeller, getAllConvers)
+router.get('/get-all-conversation-seller/:id', isSeller, getAllConvers)
 router.put('/update-last-message/:id', updateLastMessage);
 router.get("/get-all-conversation-user/:id", isAuthenticated, getUserConvers);
 
