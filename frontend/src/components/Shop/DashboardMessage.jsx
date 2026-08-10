@@ -9,7 +9,7 @@ import styles from '../../styles/styles';
 import socketIO from 'socket.io-client';
 import { format } from "timeago.js";
 
-const ENDPOINT = 'http://localhost:3000/';
+const ENDPOINT = 'https://shopo-multi-vendor-cxsf.vercel.app/';
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const DashboardMessage = () => {
