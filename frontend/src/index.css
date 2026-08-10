@@ -19,6 +19,19 @@ input,select{
     outline: none;
 }
 
+.profile-submit-btn {
+  margin-top: 2rem;
+  width: 220px;
+  height: 45px;
+  border: 1px solid #3a24db;
+  border-radius: 3px;
+  background: #fff;
+  color: #3a24db;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 500;
+}
+
 .batch_heart{
     background-color: tomato;
     width: 15px;
@@ -31,4 +44,8 @@ input,select{
     right: -24%;
     top: -9;
     cursor: pointer;
+}
+
+.blk{
+  color: #00000091;
 }
