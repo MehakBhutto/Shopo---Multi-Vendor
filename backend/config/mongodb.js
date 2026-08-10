@@ -5,13 +5,16 @@ const connectDB = async () => {
         throw new Error("MONGO_URI is not defined");
     }
 
-    mongoose.connection.on("connected", () => {
-        console.log("MongoDB connected successfully");
-    });
+    try {
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 10000,
+        });
 
-    await mongoose.connect("mongodb+srv://mhkfb15_db_user:mfbhutto2186@cluster0.erg46sh.mongodb.net/test?appName=Cluster0", {
-        serverSelectionTimeoutMS: 10000,
-    });
-}
+        console.log("MongoDB connected successfully");
+    } catch (error) {
+        console.error("MongoDB connection failed:", error.message);
+        throw error;
+    }
+};
 
 module.exports = connectDB;
