@@ -7,7 +7,7 @@ const sendShopToken = ( user, statusCode, res) => {
         expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         httpOnly: true,
         sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
     };
 
     res.status(statusCode).cookie("seller_token", token, options).json({
