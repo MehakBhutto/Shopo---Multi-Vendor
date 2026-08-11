@@ -4,7 +4,6 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
 const cors = require('cors');
-const connectDB = require('./config/mongodb');
 
 app.use(express.json());
 app.use(cookieParser());app.use(express.json());
@@ -15,15 +14,6 @@ app.use(cors({
 }));
 app.use("/", express.static("uploads"));
 app.use(bodyParser.urlencoded({extended:true, limit:'50mb'}))
-
-app.use(async (req, res, next) => {
-    try {
-        await connectDB();
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
 
 //import routes
 
