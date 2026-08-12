@@ -27,7 +27,6 @@ const App = () => {
   }
   
   useEffect(() => {
-     dispatch(loadUser());
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
