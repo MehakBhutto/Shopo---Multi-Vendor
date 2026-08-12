@@ -14,10 +14,12 @@ import { server } from '../server.js';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { getAllEvents } from './redux/actions/event.js';
+import { useDispatch } from "react-redux"
 
 const App = () => {
 
   const [stripeApiKey, setStripeApiKey] = useState("");
+  const dispatch = useDispatch();
 
   const getStripeApiKey = async () => {
     const { data } = await axios.get(`${server}/payment/stripeapikey`)
@@ -25,12 +27,13 @@ const App = () => {
   }
 
   useEffect(() => {
+     dispatch(loadSeller());
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
     getStripeApiKey();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
