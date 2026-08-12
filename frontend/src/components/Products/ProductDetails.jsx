@@ -43,7 +43,7 @@ const ProductDetails = ({ data }) => {
             await axios.post(`${server}/conversation/create-new-conversation`, {
                 groupTitle, userId, sellerId
             }).then((res) => {
-                navigate(`/conversation/${res?.data?.conversation?._id}`);
+                navigate(`/inbox`);
                 toast.success(res?.data?.message);
             }).catch((e) => {
                 toast.error(e?.response?.data?.message);
