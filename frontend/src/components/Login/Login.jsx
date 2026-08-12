@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import styles from '../../styles/styles'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import { server } from '../../../server'
 import { toast } from 'react-toastify'
+import { loadUser } from '../../redux/actions/user.js'
 
 const Login = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,10 +23,10 @@ const Login = () => {
             password,
         }, {
             withCredentials: true,
-        }).then((res) => {
+        }).then(async () => {
             toast.success("Login Successfully!")
+            await dispatch(loadUser())
             navigate('/')
-            window.location.reload();
         }).catch((e)=>{
             toast.error(e.response?.data?.message || e.message)
         })
