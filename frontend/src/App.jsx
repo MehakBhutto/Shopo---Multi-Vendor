@@ -27,7 +27,6 @@ const App = () => {
   }
 
   useEffect(() => {
-    useEffect(() => {
         dispatch(loadUser());
 
         const timer = setTimeout(() => {
@@ -36,7 +35,8 @@ const App = () => {
 
         return () => clearTimeout(timer);
     }, [dispatch]);
-    
+  
+  useEffect(() => {
      dispatch(loadUser());
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
