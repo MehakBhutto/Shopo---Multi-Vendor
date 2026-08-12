@@ -25,16 +25,6 @@ const App = () => {
     const { data } = await axios.get(`${server}/payment/stripeapikey`)
     setStripeApiKey(data.stripeApiKey);
   }
-
-  useEffect(() => {
-        dispatch(loadUser());
-
-        const timer = setTimeout(() => {
-            setShowLoader(false);
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [dispatch]);
   
   useEffect(() => {
      dispatch(loadUser());
