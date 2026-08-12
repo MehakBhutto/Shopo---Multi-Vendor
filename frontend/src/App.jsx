@@ -27,7 +27,17 @@ const App = () => {
   }
 
   useEffect(() => {
-     dispatch(loadSeller());
+    useEffect(() => {
+        dispatch(loadUser());
+
+        const timer = setTimeout(() => {
+            setShowLoader(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [dispatch]);
+    
+     dispatch(loadUser());
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
