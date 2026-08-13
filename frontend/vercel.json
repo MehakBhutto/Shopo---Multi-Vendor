@@ -2,11 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "frontend/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist"
@@ -15,20 +11,60 @@
   ],
   "routes": [
     {
-      "src": "/api/v2/(.*)",
-      "dest": "/backend/server.js"
-    },
-    {
       "src": "/assets/(.*)",
-      "dest": "/frontend/assets/$1"
+      "dest": "/assets/$1"
     },
     {
       "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|webp|woff|woff2|ttf|eot|map|json))",
-      "dest": "/frontend/$1"
+      "dest": "/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(login|sign-up|products|best-selling|events|faq|checkout|payment|profile|inbox|shop-create|shop-login|dashboard|dashboard-create-products|dashboard-orders|dashboard-refunds|dashboard-settings|dashboard-products|dashboard-create-events|dashboard-events|dashboard-messages|dashboard-coupouns|dashboard-withdraw-money)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/activation/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/seller/activation/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/product/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/order/success/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/user/order/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/user/track/order/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/user/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/shop/(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/order/(.*)",
+      "dest": "/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend/index.html"
+      "dest": "/index.html"
     }
   ]
 }
