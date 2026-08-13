@@ -14,7 +14,9 @@ function BestSellingPage(){
         if (!allproducts?.length) return
         const d = [...allproducts].sort((a, b) => (b.total_sell ?? 0) - (a.total_sell ?? 0))
         setData(d)
-    },[allproducts])
+    },[])
+
+    useEffect(()=>{},[allproducts])
 
     return (
         <div className="text-black">
