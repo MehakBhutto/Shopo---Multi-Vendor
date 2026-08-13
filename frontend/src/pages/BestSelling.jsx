@@ -10,13 +10,11 @@ function BestSellingPage(){
     const [data, setData] = useState([]);
     const { allproducts } = useSelector((state) => state.product);
 
-    useEffect(()=>{
-        if (!allproducts?.length) return
-        const d = [...allproducts].sort((a, b) => (b.total_sell ?? 0) - (a.total_sell ?? 0))
-        setData(d)
-    },[])
-
-    useEffect(()=>{},[allproducts])
+    useEffect(() => {
+        if (!allproducts?.length) return;
+        const sortedData = [...allproducts].sort((a, b) => (b.total_sell ?? 0) - (a.total_sell ?? 0));
+        setData(sortedData);
+    }, [allproducts]);
 
     return (
         <div className="text-black">
