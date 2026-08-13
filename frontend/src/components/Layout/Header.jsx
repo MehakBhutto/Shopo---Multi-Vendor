@@ -10,7 +10,7 @@ import DropDown from './DropDown'
 import Navbar from './Navbar.jsx'
 import { useDispatch, useSelector } from 'react-redux';
 import { backend_url } from '../../../server.js';
-import Cart from '../cart/Cart.jsx';
+import Cart from '../cart/Cart.jsx'
 import Wishlist from '../Wishlist/Wishlist.jsx'
 import { RxCross1 } from 'react-icons/rx';
 import { IoArrowForward } from 'react-icons/io5';
@@ -158,18 +158,6 @@ const Header = ({ activeHeading }) => {
                                 }
                             </div>
                         </div>
-                        {/* cart popup */}
-                        {
-                            openCart ? (
-                                <Cart setOpenCart={setOpenCart} />
-                            ) : null
-                        }
-                        {/* wishList popup */}
-                        {
-                            openWishList ? (
-                                <Wishlist setOpenWishList={setOpenWishList} />
-                            ) : null
-                        }
                     </div>
 
                 </div>
@@ -197,7 +185,7 @@ const Header = ({ activeHeading }) => {
                         <div className="relative mr-[20px] cursor-pointer"  onClick={() => setOpenCart(true)}>
                             <AiOutlineShoppingCart
                                 size={30} />
-                            <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono leading-tight text-center">
+                            <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono leading-tight text-center">
                                 {cart && cart.length}
                             </span>
                         </div>
@@ -211,12 +199,12 @@ const Header = ({ activeHeading }) => {
                             <div className='fixed w-[60%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll'>
                                 <div className="w-full justify-between flex pr-3">
                                     <div>
-                                        <div className="relative mr-[15px]">
+                                        <div className="relative mr-[15px] cursor-pointer" onClick={() => setOpenWishList(true)}>
                                             <AiOutlineHeart
                                                 size={30}
                                                 className='mt-5 ml-3'
                                             />
-                                            <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono leading-tight text-center">
+                                            <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono leading-tight text-center">
                                                 {wishlist && wishlist.length}
                                             </span>
                                         </div>
@@ -281,12 +269,25 @@ const Header = ({ activeHeading }) => {
                                             </div>
                                         )
                                     }
+                                    
                                 </div>
                             </div>
                         </div>
                     )
                 }
             </div>
+            {/* cart popup */}
+            {
+                openCart ? (
+                    <Cart setOpenCart={setOpenCart} />
+                ) : null
+            }
+            {/* wishList popup */}
+            {
+                openWishList ? (
+                    <Wishlist setOpenWishList={setOpenWishList} />
+                ) : null
+            }
         </>
     )
 }
