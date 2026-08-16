@@ -58,7 +58,7 @@ const createShop = async (req, res, next) => {
 
         const seller = await shopModel.create({
             ...shopSeller,
-            accountVerified: true,
+            accountVerified: false,
         });
 
         try {
@@ -82,7 +82,7 @@ const createShop = async (req, res, next) => {
 
 //create activation token
 const createActivationToken = (user) => {
-    return jwt.sign(user, process.env.ACTIVATION_SECRET, {
+    return jwt.sign({user}, process.env.ACTIVATION_SECRET, {
         expiresIn: "24h"
     })
 }
