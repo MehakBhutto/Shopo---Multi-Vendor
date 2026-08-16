@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
     phoneNumber: {
         type: String,
         minlength: [11, "Phone number must have at least 11s digits."],
-        required: [true, "Please enter your phone number"],
+        // required: [true, "Please enter your phone number"],
     },
     role: {
         type: String,
