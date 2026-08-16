@@ -48,7 +48,9 @@ const register = async (req, res, next) => {
             password,
             avatar: avatarUrl,
             accountVerified: false,
-        })
+        });
+
+        await user.save();
 
         const activationToken = createActivationToken(user);
 
@@ -65,8 +67,6 @@ const register = async (req, res, next) => {
         } catch (e) {
             return next(new ErrorHandler(e.message, 400))
         }
-
-        await user.save();
 
         res.status(201).json({
             success: true,
