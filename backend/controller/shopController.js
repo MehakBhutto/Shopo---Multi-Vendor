@@ -22,7 +22,7 @@ const createShop = async (req, res, next) => {
         const sellerEmail = await shopModel.findOne({ email });
 
         if (sellerEmail) {
-            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            const filePath = req.file.path;
             fs.unlink(filePath, (err) => {
                 if (err) {
                     console.log(err);
@@ -34,7 +34,7 @@ const createShop = async (req, res, next) => {
         // Upload avatar to Cloudinary
         let avatarUrl;
         try {
-            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            const filePath = req.file.path;
             avatarUrl = await uploadToCloudinary(filePath, 'shopo/shops');
         } catch (error) {
             console.error('Error uploading avatar to Cloudinary:', error);
@@ -223,7 +223,7 @@ const updateShopAvatar = catchAsyncErrors(async (req, res, next) => {
 
         const existingUser = await shopModel.findById(req.seller._id);
         if (!existingUser) {
-            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            const filePath = req.file.path;
             await fs.unlink(filePath, (err) => console.error(err));
             return next(new ErrorHandler("User does not exist!", 404));
         }
@@ -231,7 +231,7 @@ const updateShopAvatar = catchAsyncErrors(async (req, res, next) => {
         // Upload new avatar to Cloudinary
         let newAvatarUrl;
         try {
-            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            const filePath = req.file.path;
             newAvatarUrl = await uploadToCloudinary(filePath, 'shopo/shops');
         } catch (error) {
             console.error('Error uploading new avatar to Cloudinary:', error);
@@ -262,7 +262,7 @@ const updateShopAvatar = catchAsyncErrors(async (req, res, next) => {
         });
     } catch (e) {
         if (req.file) {
-            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            const filePath = req.file.path;
             fs.unlink(filePath, (err) => {
                 if (err) {
                     console.log(err);

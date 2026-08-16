@@ -1,7 +1,6 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Messages = require("../models/messages");
 const ErrorHandler = require("../utils/ErrorHandler");
-const path = require("path");
 const { uploadToCloudinary } = require("../utils/cloudinaryUpload");
 
 const createMessage = catchAsyncErrors(async (req, res, next) => {
@@ -13,8 +12,7 @@ const createMessage = catchAsyncErrors(async (req, res, next) => {
       const imageUrls = [];
 
       for (const file of req.files) {
-        const filePath = path.join(__dirname, "../uploads", file.filename);
-        const imageUrl = await uploadToCloudinary(filePath, "shopo/messages");
+        const imageUrl = await uploadToCloudinary(file.path, "shopo/messages");
         imageUrls.push(imageUrl);
       }
 

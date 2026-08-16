@@ -15,7 +15,7 @@ const createEvent = catchAsyncErrors(async (req, res, next) => {
         if (!shop) {
             if (req.files) {
                 req.files.forEach((file) => {
-                    const filePath = path.join(__dirname, '../uploads', file.filename);
+                    const filePath = file.path;
                     fs.unlink(filePath, (err) => {
                         if (err) {
                             console.log(err);
@@ -32,14 +32,13 @@ const createEvent = catchAsyncErrors(async (req, res, next) => {
         // Upload each file to Cloudinary
         for (const file of files) {
             try {
-                const filePath = path.join(__dirname, '../uploads', file.filename);
-                const imageUrl = await uploadToCloudinary(filePath, 'shopo/events');
+                const imageUrl = await uploadToCloudinary(file.path, 'shopo/events');
                 imageUrls.push(imageUrl);
             } catch (error) {
                 console.error('Error uploading file to Cloudinary:', error);
                 // Clean up remaining files
                 req.files.forEach((f) => {
-                    const fPath = path.join(__dirname, '../uploads', f.filename);
+                    const fPath = f.path;
                     fs.unlink(fPath, (err) => {
                         if (err) console.log(err);
                     });
@@ -62,7 +61,7 @@ const createEvent = catchAsyncErrors(async (req, res, next) => {
     } catch (e) {
         if (req.files) {
             req.files.forEach((file) => {
-                const filePath = path.join(__dirname, '../uploads', file.filename);
+                const filePath = file.path;
                 fs.unlink(filePath, (err) => {
                     if (err) {
                         console.log(err);
