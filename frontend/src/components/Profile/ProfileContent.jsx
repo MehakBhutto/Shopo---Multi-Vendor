@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { backend_url, server } from '../../../server';
+import { getImageUrl, server } from '../../../server';
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineArrowRight, AiOutlineCamera, AiOutlineDelete } from 'react-icons/ai';
 import styles from '../../styles/styles';
@@ -71,7 +71,7 @@ const ProfileContent = ({ active }) => {
                     <div className="flex justify-center w-full my-6">
                         <div className="relative">
                             <img
-                                src={`${backend_url}${user?.avatar}`}
+                                src={getImageUrl(user?.avatar)}
                                 alt="Avatar"
                                 className='w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]'
                             />

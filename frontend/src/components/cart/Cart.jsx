@@ -5,7 +5,7 @@ import { HiOutlineMinus, HiPlus } from 'react-icons/hi'
 import styles from '../../styles/styles';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { backend_url } from '../../../server';
+import { getImageUrl } from '../../../server';
 import { addToCart, removeFromCart } from '../../redux/actions/cart';
 
 const Cart = ({ setOpenCart }) => {
@@ -118,7 +118,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCart }) => {
                         <HiOutlineMinus size={16} color="#7d879c" />
                     </div>
                 </div>
-                <img src={`${backend_url}${data?.images?.[0]}`} alt="" className='w-[80px] h-[80px] ml-2 mr-2 rounded-[5px]' />
+                <img src={getImageUrl(data?.images?.[0])} alt="" className='w-[80px] h-[80px] ml-2 mr-2 rounded-[5px]' />
                 <div className='pl-[5px]'>
                     <h2>{data.name}</h2>
                     <h4 className='font-[400] text-[15px] text-[#00000082]'>${data.discountPrice} * {data.qty}</h4>

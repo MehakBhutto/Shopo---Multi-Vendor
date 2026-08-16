@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { RxCross1 } from "react-icons/rx"
 import styles from '../../../styles/styles'
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai'
-import { backend_url } from '../../../../server'
+import { getImageUrl } from '../../../../server'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -77,9 +77,9 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                         />
                         <div className="block w-full md:flex">
                             <div className="w-full md:w-[50%]">
-                                <img src={`${backend_url}${data?.images?.[0]}`} alt="" />
+                                <img src={getImageUrl(data?.images?.[0])} alt="" />
                                 <div className='flex mt-4' onClick={() => navigate(`/user/${data.shop._id}`)}>
-                                    <img src={`${backend_url}${data?.shop?.avatar}`} alt=""
+                                    <img src={getImageUrl(data?.shop?.avatar)} alt=""
                                         className='w-[50px] h-[50px] rounded-full mr-2'
                                     />
                                     <div className='flex flex-col justify-center gap-[6px]'>

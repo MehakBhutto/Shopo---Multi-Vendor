@@ -3,7 +3,7 @@ import styles from "../styles/styles"
 import { BsFillBagFill } from "react-icons/bs";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { backend_url, server } from "../../server";
+import { getImageUrl, server } from "../../server";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { getAllOrdersOfUser } from "../redux/actions/order";
@@ -109,7 +109,7 @@ const UserOrderDetails = () => {
                 data?.cart.map((item, index) => (
                     <div className="w-full flex items-start mb-5">
                         <img
-                            src={`${backend_url}${item.images[0]}`}
+                            src={getImageUrl(item.images[0])}
                             alt=""
                             className="w-[80x] h-[80px]"
                         />
@@ -149,7 +149,7 @@ const UserOrderDetails = () => {
                         <br />
                         <div className="w-full flex">
                             <img
-                                src={`${backend_url}${selectedItem?.images[0]}`}
+                                src={getImageUrl(selectedItem?.images[0])}
                                 alt=""
                                 className="w-[80px] h-[80px]"
                             />

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import styles from '../../../styles/styles';
 import ProductDetailsCard from '../ProductDetailsCard/ProductDetailsCard.jsx'
 import { AiFillHeart, AiFillStar, AiOutlineShoppingCart, AiOutlineStar, AiOutlineEye } from 'react-icons/ai'
-import { backend_url } from '../../../../server';
+import { getImageUrl } from '../../../../server';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeFromWishlist, addToWishlist } from '../../../redux/actions/wishlist.js';
 import Ratings from '../../Products/Ratings.jsx';
@@ -41,7 +41,7 @@ const ProductCard = ({ data, isEvent }) => {
 
             </div>
             <Link to={productPath}>
-                <img src={`${backend_url}`+data?.images?.[0]} alt={data?.name} className='w-full h-[170px] object-contain' />
+                <img src={getImageUrl(data?.images?.[0])} alt={data?.name} className='w-full h-[170px] object-contain' />
             </Link>
             <Link to={`/user/${data.shop._id}`}>
                 <h5 className={`${styles.shop_name}`}>{data?.shop?.name}</h5>

@@ -5,7 +5,7 @@ import { FiPackage, FiShoppingBag } from 'react-icons/fi';
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { BiMessageSquareDetail } from 'react-icons/bi';
-import { backend_url } from '../../../../server';
+import { getImageUrl } from '../../../../server';
 
 const DashboardHeader = () => {
 
@@ -43,7 +43,7 @@ const DashboardHeader = () => {
               className='mx-5 cursor-pointer' />
           </Link>
           <Link to={`/shop/${seller._id}`}>
-            <img src={`${backend_url}${seller.avatar}`} 
+            <img src={getImageUrl(seller.avatar)}
             className='w-[50px] h-[50px] rounded-full object-cover'
             alt="" />
           </Link>

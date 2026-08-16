@@ -4,7 +4,7 @@ import { BsCartPlus } from 'react-icons/bs'
 import styles from '../../styles/styles';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { backend_url } from '../../../server';
+import { getImageUrl } from '../../../server';
 import { removeFromWishlist } from '../../redux/actions/wishlist';
 
 const Wishlist = ({ setOpenWishList }) => {
@@ -73,7 +73,7 @@ const CartSingle = ({ data }) => {
                     size={13}
                     className="cursor-pointer"
                 />
-                <img src={`${backend_url}${data?.images?.[0]}`} alt={data?.name} className='w-[80px] h-[80px] ml-2 rounded-[5px] object-contain' />
+                <img src={getImageUrl(data?.images?.[0])} alt={data?.name} className='w-[80px] h-[80px] ml-2 rounded-[5px] object-contain' />
                 <div className='pl-[5px] flex-1'>
                     <h2 className='text-sm font-medium'>{data?.name}</h2>
                     <h4 className='font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto'>

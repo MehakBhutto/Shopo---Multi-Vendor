@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from '../../styles/styles'
 import CountDown from "./CountDown.jsx"
-import { backend_url } from '../../../server.js'
+import { getImageUrl } from '../../../server.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/actions/cart.js'
 import { toast } from 'react-toastify'
@@ -32,9 +32,7 @@ export default function EventCard({ data, endDate, active }) {
     }
 
     const productId = data._id || data.id;
-    const productImage = Array.isArray(data.images)
-        ? `${backend_url}` + data.images[0]
-        : `${backend_url}` + data.images;
+    const productImage = getImageUrl(Array.isArray(data.images) ? data.images[0] : data.images);
 
     return (
         <div className={`mb-12 flex w-full flex-col rounded-lg bg-white p-6 shadow-sm lg:flex-row lg:p-14 ${active ? "unset" : "mb-12"}`}>

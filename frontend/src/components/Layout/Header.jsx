@@ -9,7 +9,7 @@ import { CgProfile } from 'react-icons/cg'
 import DropDown from './DropDown'
 import Navbar from './Navbar.jsx'
 import { useDispatch, useSelector } from 'react-redux';
-import { backend_url } from '../../../server.js';
+import { getImageUrl } from '../../../server.js';
 import Cart from '../cart/Cart.jsx'
 import Wishlist from '../Wishlist/Wishlist.jsx'
 import { RxCross1 } from 'react-icons/rx';
@@ -79,7 +79,7 @@ const Header = ({ activeHeading }) => {
                                             return (
                                                 <Link to={`/product/${productId}`} key={index}>
                                                     <div className='w-full flex items-start-py-3'>
-                                                        <img src={`${backend_url}`+item.images?.[0] || item.images?.[0]} alt=""
+                                                        <img src={getImageUrl(item.images?.[0])} alt=""
                                                             className='w-[40px] h-[40px] me-[10px]'
                                                         />
                                                         <h1>{item.name}</h1>
@@ -148,7 +148,7 @@ const Header = ({ activeHeading }) => {
                             <div className="relative cursor-pointer mr-[15px]">
                                 {isAuthenticated ? (
                                     <Link to='/profile'>
-                                        <img src={`${backend_url}${user?.avatar}` || `${user?.avatar}`} className='w-[35px] h-[35px] rounded-full' alt="" />
+                                        <img src={getImageUrl(user.avatar)} className='w-[35px] h-[35px] rounded-full' alt="" />
                                     </Link>
                                 ) : (
                                     <Link to="/login">
@@ -228,7 +228,7 @@ const Header = ({ activeHeading }) => {
                                                         return (
                                                             <Link to={`/product/${productId}`} key={index}>
                                                                 <div className='w-full flex items-start-py-3'>
-                                                                    <img src={`${backend_url}`+item.images?.[0] || item?.images?.[0]} alt=""
+                                                                    <img src={getImageUrl(item.images?.[0])} alt=""
                                                                         className='w-[40px] h-[40px] me-[10px]'
                                                                     />
                                                                     <h1>{item.name}</h1>
@@ -263,7 +263,7 @@ const Header = ({ activeHeading }) => {
                                                 <Link to="/profile" onClick={scrollTo(0,0)}>
                                                     <img
                                                         className='w-[50px] h-[50px] rounded-full border'
-                                                        src={`${backend_url}${user?.avatar}` || `${user?.avatar}`}
+                                                        src={getImageUrl(user?.avatar)}
                                                         alt="" />
                                                 </Link>
                                             </div>

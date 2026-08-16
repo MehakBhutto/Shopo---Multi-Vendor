@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../../styles/styles';
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai'
-import { backend_url, server } from '../../../server';
+import { getImageUrl, server } from '../../../server';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProductsShop } from '../../redux/actions/product';
 import { addToCart } from '../../redux/actions/cart';
@@ -102,13 +102,13 @@ const ProductDetails = ({ data }) => {
                         <div className="w-full py-5">
                             <div className="block w-full md:flex">
                                 <div className='w-full md:w-[50%]'>
-                                    <img src={`${backend_url}` + data?.images?.[select]} alt="" className='w-[80%]' />
+                                    <img src={getImageUrl(data?.images?.[select])} alt="" className='w-[80%]' />
                                     <br />
                                     <div className="w-full flex">
                                         {data.images.length > 0 ? data.images.map((image, index) => (
                                             <div key={`${image}-${index}`} className={`${select === index ? "border" : ""} cursor-pointer`}>
                                                 <img
-                                                    src={`${backend_url}` + image}
+                                                    src={getImageUrl(image)}
                                                     alt=""
                                                     className="h-[200px]"
                                                     onClick={() => setSelect(index)}
@@ -165,7 +165,7 @@ const ProductDetails = ({ data }) => {
                                         </span>
                                     </div>
                                     <div className="flex items-center pt-8">
-                                        <img className='w-[50px] h-[50px] rounded-full mr-2' src={`${backend_url}` + data?.shop?.avatar} alt="" />
+                                        <img className='w-[50px] h-[50px] rounded-full mr-2' src={getImageUrl(data?.shop?.avatar)} alt="" />
                                         <div className='pr-8'>
                                             <h3 className={`${styles.shop_name} !py-1 !pt-3 cursor-pointer`} onClick={() => navigate(`/user/${data.shop._id}`)}>
                                                 {data.shop.name}
@@ -246,7 +246,7 @@ const ProductDetailsInfo = ({ data, dispatch, totalReviewsLength, averageRating 
                             {
                                 data && data.reviews.map((item, index) => (
                                     <div className="w-full flex my-2">
-                                        <img src={`${backend_url}${item.user.avatar}`} className='w-[50px] h-[50px] rounded-full' />
+                                        <img src={getImageUrl(item.user.avatar)} className='w-[50px] h-[50px] rounded-full' />
                                         <div className='pl-2'>
                                             <div className="w-full flex items-center">
                                                 <h1 className='mr-3 font-[500]'>{item?.user.name}</h1>
@@ -273,7 +273,7 @@ const ProductDetailsInfo = ({ data, dispatch, totalReviewsLength, averageRating 
                     <div className="w-full block md:flex p-5">
                         <div className="w-full md:w-[50%]">
                             <div className="flex items-center">
-                                <img className='w-[50px] h-[50px] rounded-full' src={`${backend_url}` + data?.shop?.avatar} alt="" />
+                                <img className='w-[50px] h-[50px] rounded-full' src={getImageUrl(data?.shop?.avatar)} alt="" />
                                 <div className='pl-3'>
                                     <h3 className={styles.shop_name}>
                                         {data.shop.name}

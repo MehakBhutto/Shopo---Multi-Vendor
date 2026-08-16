@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Header from '../components/Layout/Header'
-import { backend_url, server } from '../../server';
+import { getImageUrl, server } from '../../server';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -232,7 +232,7 @@ const MessageList = ({
             <div className="relative w-[50px] h-[50px] flex-shrink-0">
                 {/* FIX: Changed userData to user */}
                 <img
-                    src={`${backend_url}${user?.avatar}`}
+                    src={getImageUrl(user?.avatar)}
                     className='w-full h-full rounded-full object-cover'
                     alt="User profile"
                 />
@@ -275,7 +275,7 @@ const SellerInbox = ({
             {/* Message header */}
             <div className="w-full flex p-3 items-center justify-between bg-slate-200">
                 <div className="flex items-center">
-                    <img src={`${backend_url}${userData?.avatar}`} className='w-[50px] h-[50px] rounded-full mr-3' alt="" />
+                    <img src={getImageUrl(userData?.avatar)} className='w-[50px] h-[50px] rounded-full mr-3' alt="" />
                     <div>
                         <h1 className='text-[18px] font-[600]'>{userData?.name}</h1>
                         <h1 className='text-[12px] text-green-600 font-medium'>{activeStatus ? "Active Now" : ""}</h1>
@@ -297,7 +297,7 @@ const SellerInbox = ({
                             >
                                 {!isSender && (
                                     <img
-                                        src={`${backend_url}${userData?.avatar}`}
+                                        src={getImageUrl(userData?.avatar)}
                                         className="w-[35px] h-[35px] rounded-full mr-2 self-end"
                                         alt=""
                                     />

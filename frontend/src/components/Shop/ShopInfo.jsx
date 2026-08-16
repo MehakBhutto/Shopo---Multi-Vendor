@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { backend_url, server } from '../../../server'
+import { getImageUrl, server } from '../../../server'
 import styles from '../../styles/styles'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
@@ -27,7 +27,7 @@ const ShopInfo = ({ isOwner }) => {
         <div>
             <div className='w-full py-5'>
                 <div className="w-full flex items-center justify-center">
-                    <img src={`${backend_url}${products?.[0]?.shop?.avatar || seller?.avatar}`} alt=""
+                    <img src={getImageUrl(products?.[0]?.shop?.avatar || seller?.avatar)} alt=""
                         className='w-[150px] h-[150px] object-cover rounded-full'
                     />
                 </div>
