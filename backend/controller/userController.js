@@ -42,13 +42,13 @@ const register = async (req, res, next) => {
             return next(new ErrorHandler('Failed to upload avatar to Cloudinary', 400));
         }
 
-        const user = {
+        const user = new userModel({
             name,
             email,
             password,
             avatar: avatarUrl,
             accountVerified: false,
-        }
+        })
 
         const activationToken = createActivationToken(user);
 
@@ -65,6 +65,8 @@ const register = async (req, res, next) => {
         } catch (e) {
             return next(new ErrorHandler(e.message, 400))
         }
+
+        await user.save();
 
         res.status(201).json({
             success: true,
