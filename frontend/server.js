@@ -3,3 +3,9 @@ const backendBaseUrl =
 
 export const server = `${backendBaseUrl}/api/v2`;
 export const backend_url = `${backendBaseUrl}/`;
+
+export const getImageUrl = (url) => {
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${backend_url}${url}`;
+};
