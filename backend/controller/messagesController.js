@@ -1,17 +1,24 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const Messages = require("../models/messages");
 const ErrorHandler = require("../utils/ErrorHandler");
+const path = require("path");
+const { uploadToCloudinary } = require("../utils/cloudinaryUpload");
 
 const createMessage = catchAsyncErrors(async (req, res, next) => {
   try {
 
     const messageData = req.body;
 
-    if (req.files) {
-      const files = req.files;
-      const imageUrl = files.map((file) => `${file.filename}`);
+    if (req.files && req.files.length > 0) {
+      const imageUrls = [];
 
-      messageData.images = imageUrl;
+      for (const file of req.files) {
+        const filePath = path.join(__dirname, "../uploads", file.filename);
+        const imageUrl = await uploadToCloudinary(filePath, "shopo/messages");
+        imageUrls.push(imageUrl);
+      }
+
+      messageData.images = imageUrls;
     }
 
     messageData.conversationId = req.body.conversationId;

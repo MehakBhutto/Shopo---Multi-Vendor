@@ -6,6 +6,7 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const sendMail = require('../utils/sendMail');
 const sendToken = require('../utils/jwtToken');
+const { uploadToCloudinary, deleteFromCloudinary, extractPublicIdFromUrl } = require('../utils/cloudinaryUpload');
 
 const register = async (req, res, next) => {
     try {
@@ -22,7 +23,8 @@ const register = async (req, res, next) => {
         const userEmail = await userModel.findOne({ email });
 
         if (userEmail) {
-            fs.unlink(req.file.path, (err) => {
+            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            fs.unlink(filePath, (err) => {
                 if (err) {
                     console.log(err);
                 }
@@ -31,14 +33,21 @@ const register = async (req, res, next) => {
             return next(new ErrorHandler("User already exists", 400))
         }
 
-        const filename = req.file.filename;
-        const fileUrl = path.join(filename);
+        // Upload avatar to Cloudinary
+        let avatarUrl;
+        try {
+            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            avatarUrl = await uploadToCloudinary(filePath, 'shopo/users');
+        } catch (error) {
+            console.error('Error uploading avatar to Cloudinary:', error);
+            return next(new ErrorHandler('Failed to upload avatar to Cloudinary', 400));
+        }
 
         const user = {
             name,
             email,
             password,
-            avatar: fileUrl,
+            avatar: avatarUrl,
             accountVerified: false,
         }
 
@@ -64,7 +73,8 @@ const register = async (req, res, next) => {
         })
     } catch (e) {
         if (req.file) {
-            fs.unlink(`uploads/${req.file.filename}`, (err) => {
+            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            fs.unlink(filePath, (err) => {
                 if (err) {
                     console.log(err);
                 }
@@ -209,22 +219,39 @@ const updateAvatar = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Please upload an avatar image", 400));
         }
 
-        const filename = req.file.filename;
-
         const existingUser = await userModel.findById(req.user._id);
         if (!existingUser) {
-            await fs.unlink(path.join('uploads', filename)).catch(err => console.error(err));
+            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            await fs.unlink(filePath, (err) => console.error(err));
             return next(new ErrorHandler("User does not exist!", 404));
         }
 
-        const existAvatarPath = path.join('uploads', existingUser.avatar);
-        if (fs.existsSync(existAvatarPath)) {
-            fs.unlinkSync(existAvatarPath);
+        // Upload new avatar to Cloudinary
+        let newAvatarUrl;
+        try {
+            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            newAvatarUrl = await uploadToCloudinary(filePath, 'shopo/users');
+        } catch (error) {
+            console.error('Error uploading new avatar to Cloudinary:', error);
+            return next(new ErrorHandler('Failed to upload avatar to Cloudinary', 400));
+        }
+
+        // Delete old avatar from Cloudinary after the replacement upload succeeds.
+        if (existingUser.avatar) {
+            try {
+                const publicId = extractPublicIdFromUrl(existingUser.avatar);
+                if (publicId) {
+                    await deleteFromCloudinary(publicId);
+                }
+            } catch (error) {
+                console.error('Error deleting old avatar from Cloudinary:', error);
+            }
         }
 
         const updatedUser = await userModel.findByIdAndUpdate(
             req.user._id,
-            { avatar: filename },
+            { avatar: newAvatarUrl },
+            { new: true }
         );
 
         res.status(200).json({
@@ -233,7 +260,8 @@ const updateAvatar = catchAsyncErrors(async (req, res, next) => {
         });
     } catch (e) {
         if (req.file) {
-            fs.unlink(`uploads/${req.file.filename}`, (err) => {
+            const filePath = path.join(__dirname, '../uploads', req.file.filename);
+            fs.unlink(filePath, (err) => {
                 if (err) {
                     console.log(err);
                 }

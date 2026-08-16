@@ -3,6 +3,8 @@ const ErrorHandler = require('../utils/ErrorHandler');
 const eventModel = require("../models/eventModel");
 const shopModel = require("../models/shopModel");
 const fs = require("fs");
+const path = require("path");
+const { uploadToCloudinary, deleteFromCloudinary, extractPublicIdFromUrl } = require('../utils/cloudinaryUpload');
 
 //create event
 const createEvent = catchAsyncErrors(async (req, res, next) => {
@@ -13,7 +15,8 @@ const createEvent = catchAsyncErrors(async (req, res, next) => {
         if (!shop) {
             if (req.files) {
                 req.files.forEach((file) => {
-                    fs.unlink(`uploads/${file.filename}`, (err) => {
+                    const filePath = path.join(__dirname, '../uploads', file.filename);
+                    fs.unlink(filePath, (err) => {
                         if (err) {
                             console.log(err);
                         }
@@ -22,11 +25,31 @@ const createEvent = catchAsyncErrors(async (req, res, next) => {
             }
             return next(new ErrorHandler("Shop Id is invalid", 400))
         }
+
         const files = req.files;
-        const imageUrl = files.map((file) => `${file.filename}`);
+        const imageUrls = [];
+
+        // Upload each file to Cloudinary
+        for (const file of files) {
+            try {
+                const filePath = path.join(__dirname, '../uploads', file.filename);
+                const imageUrl = await uploadToCloudinary(filePath, 'shopo/events');
+                imageUrls.push(imageUrl);
+            } catch (error) {
+                console.error('Error uploading file to Cloudinary:', error);
+                // Clean up remaining files
+                req.files.forEach((f) => {
+                    const fPath = path.join(__dirname, '../uploads', f.filename);
+                    fs.unlink(fPath, (err) => {
+                        if (err) console.log(err);
+                    });
+                });
+                return next(new ErrorHandler('Failed to upload images to Cloudinary', 400));
+            }
+        }
 
         const eventData = req.body;
-        eventData.images = imageUrl;
+        eventData.images = imageUrls;
         eventData.shop = shop;
 
         const event = await eventModel.create(eventData);
@@ -39,7 +62,8 @@ const createEvent = catchAsyncErrors(async (req, res, next) => {
     } catch (e) {
         if (req.files) {
             req.files.forEach((file) => {
-                fs.unlink(`uploads/${file.filename}`, (err) => {
+                const filePath = path.join(__dirname, '../uploads', file.filename);
+                fs.unlink(filePath, (err) => {
                     if (err) {
                         console.log(err);
                     }
@@ -78,16 +102,18 @@ const DeleteShopEvent = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Event not found with this id!", 500));
         };
 
-        eventData.images.forEach((imageUrl) => {
-            const filename = imageUrl;
-            const filePath = `uploads/${filename}`;
-
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.log(err);
+        // Delete images from Cloudinary
+        for (const imageUrl of eventData.images) {
+            try {
+                const publicId = extractPublicIdFromUrl(imageUrl);
+                if (publicId) {
+                    await deleteFromCloudinary(publicId);
                 }
-            });
-        });
+            } catch (error) {
+                console.error('Error deleting image from Cloudinary:', error);
+                // Continue with deletion even if Cloudinary deletion fails
+            }
+        }
 
         const event = await eventModel.findByIdAndDelete(eventId);
 
